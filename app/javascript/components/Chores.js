@@ -1,5 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
+import NewChoreForm from './NewChoreForm';
+
 class Chores extends React.Component {
 
 	// Constructor
@@ -7,6 +9,7 @@ class Chores extends React.Component {
 	    chores: [],
 	    tasks: [],
 		children: [],
+		modal_open: false
 	}
 
 	// Lifecycle Methods
@@ -63,7 +66,12 @@ class Chores extends React.Component {
 	    })
 	}
 
-	// Methods - manipulating data
+	// Methods - manipulating state
+	switchModal = () => {
+	    this.setState(prevState => ({
+	        modal_open: !prevState.modal_open
+	    }));
+	}
 
 
 	// Methods - rendering helpers
@@ -92,19 +100,32 @@ class Chores extends React.Component {
 
 
 	showChores = () => {
-    return this.state.chores.map((chore, index) => {
+	    return this.state.chores.map((chore, index) => {
+	        return (
+	            <tr key={index} >
+	                <td width="125" align="left">{this.find_child_name(chore)}</td>
+	                <td width="200" align="left">{this.find_task_name(chore)}</td>
+	                <td width="75" align="center">{chore.due_on}</td>
+	                <td width="125" align="center">{chore.completed ? "True" : "False"}</td>
+	                <td width="50">Check</td>
+	                <td width="50">Delete</td>
+	            </tr>
+	            )
+	    })
+	}
+
+	showChoreForm = () => {
         return (
-            <tr key={index} >
-                <td width="125" align="left">{this.find_child_name(chore)}</td>
-                <td width="200" align="left">{this.find_task_name(chore)}</td>
-                <td width="75" align="center">{chore.due_on}</td>
-                <td width="125" align="center">{chore.completed ? "True" : "False"}</td>
-                <td width="50">Check</td>
-                <td width="50">Delete</td>
-            </tr>
+            <div>
+                <NewChoreForm 
+                    children={this.state.children}
+                    tasks={this.state.tasks}
+                    run_ajax={this.run_ajax}
+                    switchModal={this.switchModal}
+                />
+            </div>
             )
-    })
-}
+    }
 
 	// Render Method
 	render () {
@@ -124,7 +145,10 @@ class Chores extends React.Component {
 					    { this.showChores() }
 					</tbody>
 	            </table>
-	            <button>New Chore</button>
+
+	            <button onClick={this.switchModal}>New Chore</button>
+	            { this.state.modal_open ? this.showChoreForm() : null }
+
 	        </div>
 	        );
 	}
