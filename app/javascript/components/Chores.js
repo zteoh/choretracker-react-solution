@@ -5,16 +5,28 @@ class Chores extends React.Component {
 	// Constructor
 	state = { 
 	    chores: [],
+	    tasks: [],
+		children: [],
 	}
 
 	// Lifecycle Methods
 	componentDidMount() {
 	    this.get_chores()
+	    this.get_tasks()
+		this.get_children()
 	}
 
 	// Methods - get information from database
 	get_chores = () => {
 	    this.run_ajax('/chores.json', 'GET', {}, (res) => {this.setState({chores: res})});
+	}
+
+	get_tasks = () => {
+		this.run_ajax('/tasks.json', 'GET', {}, (res) => {this.setState({tasks: res})});
+	}
+
+	get_children = () => {
+		this.run_ajax('/children.json', 'GET', {}, (res) => {this.setState({children: res})});
 	}
 
 	run_ajax = (link, method="GET", data={}, callback = () => {this.get_chores()}) => {
@@ -52,16 +64,39 @@ class Chores extends React.Component {
 	}
 
 	// Methods - manipulating data
-	
+
 
 	// Methods - rendering helpers
+
+	find_child_name = (chore) => {
+	    var desired_id = chore.child_id;
+	    const children = this.state.children
+	    for (var child = 0; child < children.length; child += 1){
+	        if (children[child]['id'] == desired_id){
+	            return children[child]['first_name'].concat(' ', children[child]['last_name']);
+	        }
+	    }
+	    return "No name"
+	}
+
+	find_task_name = (chore) => {
+		var desired_id = chore.task_id;
+		const tasks = this.state.tasks
+		for (var task = 0; task < tasks.length; task += 1){
+			if (tasks[task]['id'] == desired_id){
+				return tasks[task]['name'];
+			}
+		}
+		return "No task"
+	}
+
 
 	showChores = () => {
     return this.state.chores.map((chore, index) => {
         return (
             <tr key={index} >
-                <td width="125" align="left">{chore.child_id}</td>
-                <td width="200" align="left">{chore.task_id}</td>
+                <td width="125" align="left">{this.find_child_name(chore)}</td>
+                <td width="200" align="left">{this.find_task_name(chore)}</td>
                 <td width="75" align="center">{chore.due_on}</td>
                 <td width="125" align="center">{chore.completed ? "True" : "False"}</td>
                 <td width="50">Check</td>
