@@ -38,10 +38,21 @@ class NewChoreForm extends React.Component {
 		this.setState({due_on: event.target.value});
 	}
 
+	handleSubmit = (event) => {
+        const new_chore = {
+                        child_id: this.state.child.id,
+                        task_id: this.state.task.id,
+                        due_on: this.state.due_on,
+                        completed: this.state.completed
+                    }
+        this.props.run_ajax('/chores.json', 'POST', {"chore": new_chore});
+        this.props.switchModal()
+    }
+
 	render() {
 		return (
 			 <div>
-				  <form>
+				  <form onSubmit={this.handleSubmit}>
 						<label>
 						  Child:
 						  <select onChange={this.handleChildChange}>
