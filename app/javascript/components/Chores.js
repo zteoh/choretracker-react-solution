@@ -73,6 +73,16 @@ class Chores extends React.Component {
 	    }));
 	}
 
+	toggle_complete = (chore) => {
+        const updated_chore = {
+            child_id: chore.child_id,
+            task_id: chore.task_id,
+            due_on: chore.due_on,
+            completed: !chore.completed
+        }
+        this.run_ajax('/chores/'.concat(chore.id, '.json'), 'PATCH', {chore: updated_chore});
+    }
+
 
 	// Methods - rendering helpers
 
@@ -107,7 +117,7 @@ class Chores extends React.Component {
 	                <td width="200" align="left">{this.find_task_name(chore)}</td>
 	                <td width="75" align="center">{chore.due_on}</td>
 	                <td width="125" align="center">{chore.completed ? "True" : "False"}</td>
-	                <td width="50">Check</td>
+	                <td width="50" onClick={() => this.toggle_complete(chore)}>Check</td>
 	                <td width="50">Delete</td>
 	            </tr>
 	            )
