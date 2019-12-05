@@ -83,6 +83,10 @@ class Chores extends React.Component {
         this.run_ajax('/chores/'.concat(chore.id, '.json'), 'PATCH', {chore: updated_chore});
     }
 
+    remove_record = (chore) => {
+        this.run_ajax('/chores/'.concat(chore['id'], '.json'), 'DELETE', {chore: chore});       
+    }
+
 
 	// Methods - rendering helpers
 
@@ -118,7 +122,7 @@ class Chores extends React.Component {
 	                <td width="75" align="center">{chore.due_on}</td>
 	                <td width="125" align="center">{chore.completed ? "True" : "False"}</td>
 	                <td width="50" onClick={() => this.toggle_complete(chore)}>Check</td>
-	                <td width="50">Delete</td>
+	                <td width="50" onClick={() => this.remove_record(chore)}>Delete</td>
 	            </tr>
 	            )
 	    })
